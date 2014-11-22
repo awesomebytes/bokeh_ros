@@ -37,24 +37,26 @@ class JointStatesPlotter():
         
         figure(title="Line example for joint states")
         line(self.x_data, self.y_data, 
-            self.get_joint_limits('arm_left_1_joint'),
-            color="#0000FF", x_axis_type = "datetime", 
+            y_range=self.get_joint_limits('arm_left_1_joint'),
+            color="#0000FF", #x_axis_type = "datetime", 
             tools="pan,resize,wheel_zoom", width=1200,height=300, 
             title = 'Joint states for arm_left_1_joint',
             legend='joint value')
         xaxis()[0].axis_label = "Time"
         yaxis()[0].axis_label = "Joint pos"
         # Testing random stuff to get more plots to work
-#         p1 = curplot()
-#         figure(title="Line example for joint states")
-#         line(self.x_data, self.y_data, color="#0000FF", x_axis_type = "datetime", 
-#             tools="pan,resize,wheel_zoom", width=1200,height=300, 
-#             title = 'Joint states for arm_left_2_joint',
-#             legend='joint value')
-#         xaxis()[0].axis_label = "Time"
-#         yaxis()[0].axis_label = "Joint pos"
-#         p2 = curplot()
-#         gp = GridPlot(children=[[p1,p2]])
+        #p1 = curplot()
+        figure(title="Line example for joint states again")
+        line(self.x_data, self.y_data, 
+            y_range=self.get_joint_limits('arm_left_1_joint'),
+            color="#0000FF", #x_axis_type = "datetime", 
+            tools="pan,resize,wheel_zoom", width=1200,height=300, 
+            title = 'Joint states for arm_left_1_joint again',
+            legend='joint value')
+        xaxis()[0].axis_label = "Time"
+        yaxis()[0].axis_label = "Joint pos"
+        p2 = curplot()
+        #gp = GridPlot(children=[[p1,p2]])
 #         show(gp)
         show()
         rospy.loginfo("Plotted!")
@@ -63,7 +65,7 @@ class JointStatesPlotter():
         lower_limit = -4.0
         upper_limit = 4.0
         # Do magic to get limits with urdf_parser_py
-        return lower_limit, upper_limit
+        return [lower_limit, upper_limit]
 
 
     def js_cb(self, data):
@@ -115,6 +117,8 @@ class JointStatesPlotter():
         print renderers
         print len(renderers)
         datasource = renderers[0].data_source
+        print "datasource.column_names:"
+        print datasource.column_names
         #datasource2 = renderers[1].data_source
         while not rospy.is_shutdown():
             #rospy.logwarn("x_data: " + str(self.x_data))
@@ -127,6 +131,7 @@ class JointStatesPlotter():
 #             datasource2._dirty = True
 #             cursession().store_objects(datasource2)
             rospy.sleep(0.01)
+            # TODO: Know if we can make bokeh-server go faster as it's updating the graph quite slowly
         
 
 if __name__ == '__main__':
