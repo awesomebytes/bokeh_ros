@@ -59,9 +59,18 @@ for myplot in plot_dicts:
 
 # Set up the dynamic plotting
 initial_time = time.time()
+last_time = None
 while True:
+
     time_ref = (time.time() - initial_time) % 60
     for idx, myplot in enumerate(plot_dicts):
+        if last_time == None:
+            last_time = time.time()
+        else:
+            this_update_time = time.time()
+            time_dif = this_update_time - last_time
+            last_time = time.time()
+            print "Update cycle time: " + str(time_dif) + " seconds."
         print "Updating data for: " + myplot['title']
         myplot['data_source'].data["x"] = myplot['x_data']
         myplot['data_source'].data["y"] = myplot['y_data']
